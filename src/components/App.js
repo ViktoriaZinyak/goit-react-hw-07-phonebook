@@ -1,55 +1,50 @@
 import { useState, useEffect } from 'react';
-import { nanoid } from 'nanoid';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchContacts } from 'redux/operations';
+import { getError, getIsLoading, getContacts } from 'redux/selectors';
 import ContactForm from './ContactForm';
 import ContactList from './ContactList';
 import Filter from './Filter';
 import { Wrap } from './App.styled';
 
-const KEY = 'contacts';
-const parsedContacts = JSON.parse(localStorage.getItem(KEY));
-const userContacts = [
-  { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-  { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-  { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-  { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-];
-
 const App = () => {
-  const getContacts = () => {
-    return parsedContacts ?? userContacts;
-  };
+  const dispatch = useDispatch();
+  const isLoading = useSelector(getIsLoading);
+  const contacts = useSelector(getContacts);
+  const error = useSelector(getError);
 
-  const [contacts, setContacts] = useState(getContacts);
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
+
+  // const getContacts = () => {
+  //   return parsedContacts ?? userContacts;
+  // };
+
+  // const [contacts, setContacts] = useState(getContacts);
 
   const [filter, setFilter] = useState('');
 
-  const addContact = (name, number) => {
-    const contact = {
-      id: nanoid(),
-      name,
-      number,
-    };
-    contacts.find(contact => contact.name === name)
-      ? alert(`${name} is already in contacts`)
-      : setContacts(prevState => [contact, ...prevState]);
-  };
-
-  useEffect(() => {
-    localStorage.setItem(KEY, JSON.stringify(contacts));
-  }, [contacts]);
+  // const addContact = (name, number) => {
+  //   const contact = {
+  //     id: nanoid(),
+  //     name,
+  //     number,
+  //   };
+  //   contacts.find(contact => contact.name === name)
+  //     ? alert(`${name} is already in contacts`)
+  //     : setContacts(prevState => [contact, ...prevState]);
+  // };
 
   // useEffect(() => {
-  //   const parsedContacts = JSON.parse(localStorage.getItem('contacts'));
-  //   if (parsedContacts) {
-  //     setContacts(parsedContacts);
-  //   }
-  // }, []);
+  //   localStorage.setItem(KEY, JSON.stringify(contacts));
+  // }, [contacts]);
 
-  const deleteContact = contactId => {
-    setContacts(prevState =>
-      prevState.filter(contact => contact.id !== contactId)
-    );
-  };
+  // const deleteContact = contactId => {
+  //   setContacts(prevState =>
+  //     prevState.filter(contact => contact.id !== contactId)
+  //   );
+  // };
 
   const onChangeFilter = e => {
     setFilter(e.target.value);
@@ -67,12 +62,13 @@ const App = () => {
   return (
     <Wrap>
       <h1>PhoneBook</h1>
-      <ContactForm onSubmit={addContact} />
+      <ContactForm />
       <h2>Contacts</h2>
+      {isLoading && !error && <b>Request in progress...</b>}
       <Filter value={filter} onChange={onChangeFilter} />
       <ContactList
         contacts={filteredContacts}
-        onDeleteContact={deleteContact}
+        // onDeleteContact={deleteContact}
       />
     </Wrap>
   );

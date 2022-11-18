@@ -13,14 +13,18 @@ export const ContactList = () => {
     name.toLowerCase().includes(filterValue)
   );
   console.log(filterValue);
-  // const visibleTasks = getVisibleTasks(tasks, statusFilter);
+
   return (
     <ul>
-      {visiableContacts.map(contact => (
-        <Item key={contact.id}>
-          <Contact contact={contact} />
-        </Item>
-      ))}
+      {visiableContacts.length > 0 ? (
+        visiableContacts.map(contact => (
+          <Item key={contact.id}>
+            <Contact contact={contact} />
+          </Item>
+        ))
+      ) : (
+        <div>No contacts </div>
+      )}
     </ul>
   );
 };
@@ -33,7 +37,6 @@ ContactList.propTypes = {
       number: PropTypes.string.isRequired,
     })
   ),
-  onDeleteContact: PropTypes.func.isRequired,
 };
 
 export default ContactList;
