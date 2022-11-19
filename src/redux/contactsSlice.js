@@ -32,21 +32,24 @@ const contactsSlice = createSlice({
       state.isLoading = false;
       state.error = null;
       state.items.push(action.payload);
+      console.log(state.items);
     },
     [addContact.rejected]: handleRejected,
-  },
+    // Видалення контактів
+    [deleteContact.pending]: handlePending,
+    [deleteContact.fulfilled](state, action) {
+      state.isLoading = false;
+      state.error = null;
+      const index = state.items.findIndex(contact => {
+        console.log(contact.id);
+        return contact.id === action.payload;
+      });
+      state.items.splice(index, 1);
+      console.log(state.items);
+    },
 
-  // Видалення контактів
-  [deleteContact.pending]: handlePending,
-  [deleteContact.fulfilled](state, action) {
-    state.isLoading = false;
-    state.error = null;
-    const index = state.items.findIndex(
-      contact => contact.id === action.payload.id
-    );
-    state.items.splice(index, 1);
+    [deleteContact.rejected]: handleRejected,
   },
-  [deleteContact.rejected]: handleRejected,
 });
 
 export const contactsReducer = contactsSlice.reducer;

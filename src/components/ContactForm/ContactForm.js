@@ -11,10 +11,10 @@ const ContactForm = () => {
     event.preventDefault();
     const form = event.target;
     const name = form.elements.name.value;
-    const number = form.elements.number.value;
+    const phone = form.elements.number.value;
     contacts.find(contact => contact.name === name)
       ? alert(`${name} is already in contacts`)
-      : dispatch(addContact({ name, number }));
+      : dispatch(addContact({ name, phone }));
     form.reset();
   };
 
